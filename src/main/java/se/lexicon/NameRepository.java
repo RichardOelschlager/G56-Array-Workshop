@@ -15,8 +15,7 @@ public class NameRepository {
      * @return The number of elements in the names array.
      */
     public static int getSize() {
-        //todo: implement getSize method
-        return 0;
+        return names.length;
     }
 
 
@@ -26,7 +25,7 @@ public class NameRepository {
      * @param names The array of names to set.
      */
     public static void setNames(String[] names) {
-        //todo: implement setNames method
+        NameRepository.names = names;
     }
 
 
@@ -34,8 +33,9 @@ public class NameRepository {
      * Clears the names array by creating a new empty array.
      */
     public static void clear() {
-        //todo: implement clear method
-    }
+        String[] empty = new String[0];
+        NameRepository.names = empty;
+     }
 
 
     /**
@@ -44,8 +44,8 @@ public class NameRepository {
      * @return A new array containing all elements from the names array.
      */
     public static String[] findAll() {
-        //todo: implement findAll method
-        return null;
+        String[] namesCopy = NameRepository.names;
+        return namesCopy;
     }
 
 
@@ -56,7 +56,11 @@ public class NameRepository {
      * @return The matching name if found; otherwise, null.
      */
     public static String find(String fullName) {
-        //todo: implement find method
+        for (String name : names){
+            if (fullName.equalsIgnoreCase(name)) {
+                return name;
+            }
+        }
         return null;
     }
 
@@ -68,7 +72,12 @@ public class NameRepository {
      * @return True if the fullName is added successfully; false if it already exists.
      */
     public static boolean add(String fullName) {
-        //todo: implement add method
+        if(find(fullName) != null){
+            String[] newArray = new String[names.length + 1];
+            System.arraycopy(names, 0, newArray, 0, names.length);
+            newArray[names.length] = fullName;
+            return true;
+        }
         return false;
     }
 
@@ -80,8 +89,27 @@ public class NameRepository {
      * @return An array containing all matching names.
      */
     public static String[] findByFirstName(String firstName) {
-        //todo: findByFirstName method
-        return null;
+        if (names == null || names.length == 0) {
+            return new String[0];
+        }
+
+        int count = 0;
+        for (String fullName : names) {
+            String[] parts = fullName.split(" ");
+            if (parts.length > 0 && parts[0].equals(firstName)) {
+                count++;
+            }
+        }
+        String[] matches = new String[count];
+        int index = 0;
+        for (String fullName : names) {
+            String[] parts = fullName.split(" ");
+            if (parts.length > 0 && parts[0].equals(firstName)) {
+                matches[index] = fullName;
+                index++;
+            }
+        }
+        return matches;
     }
 
 
@@ -92,8 +120,34 @@ public class NameRepository {
      * @return An array containing all matching names.
      */
     public static String[] findByLastName(String lastName) {
-        //todo: implement findByLastName method
-        return null;
+
+        if (names == null || names.length == 0) {
+            return new String[0]; // Return empty array if names is empty
+        }
+
+        // First, count matches
+        int count = 0;
+        for (String fullName : names) {
+            String[] parts = fullName.split(" ");
+            if (parts.length > 0 && parts[1].equals(lastName)) {
+                count++;
+            }
+        }
+
+        // Create result array of exact size
+        String[] matches = new String[count];
+
+        // Fill result array
+        int index = 0;
+        for (String fullName : names) {
+            String[] parts = fullName.split(" ");
+            if (parts.length > 0 && parts[1].equals(lastName)) {
+                matches[index] = fullName;
+                index++;
+            }
+        }
+
+        return matches;
     }
 
 
@@ -105,7 +159,22 @@ public class NameRepository {
      * @return True if the name is updated successfully; false if the updated name already exists or the original name is not found.
      */
     public static boolean update(String original, String updatedName) {
-        //todo: implement update method
+        if (names == null || names.length == 0) {
+            return false;
+        }
+
+        for (String name : names) {
+            if (name.equals(updatedName)) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(original)) {
+                names[i] = updatedName;
+                return true;
+            }
+        }
         return false;
     }
 
@@ -117,8 +186,29 @@ public class NameRepository {
      * @return True if the name is removed successfully; false if the name is not found in the array.
      */
     public static boolean remove(String fullName) {
-        //todo: implement remove method
-        return false;
+        if (names == null || names.length == 0) {
+            return false;
+        }
+        int indexToRemove = -1;
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equalsIgnoreCase(fullName)) {
+                indexToRemove = i;
+                break;
+            }
+        }
+        if (indexToRemove == -1) {
+            return false;
+        }
+        String[] newNames = new String[names.length - 1];
+        int newIndex = 0;
+        for (int i = 0; i < names.length; i++) {
+            if (i != indexToRemove) {
+                newNames[newIndex] = names[i];
+                newIndex++;
+            }
+        }
+        names = newNames;
+        return true;
     }
 
 
